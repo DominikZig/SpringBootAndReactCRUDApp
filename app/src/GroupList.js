@@ -1,41 +1,58 @@
 import React, { Component } from 'react';
 import { Button, ButtonGroup, Container, Table } from 'reactstrap';
 import AppNavbar from './AppNavbar';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
 
-class GroupList extends Component {
+class GroupList extends Component
+{
+    static propTypes =
+    {
+        cookies: instanceOf(Cookies).isRequired
+    };
 
-    constructor(props) {
+    constructor(props)
+    {
         super(props);
-        this.state = {groups: [], isLoading: true};
+        const {cookies} = props;
+        this.state = {groups: [], csrfToken: cookies.get('XSRF-TOKEN'), isLoading: true};
         this.remove = this.remove.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount()
+    {
         this.setState({isLoading: true});
 
-        fetch('api/groups')
+        fetch('api/groups', {credentials: 'include'})
             .then(response => response.json())
-            .then(data => this.setState({groups: data, isLoading: false}));
+            .then(data => this.setState({groups: data, isLoading: false}))
+            .catch(() => this.props.history.push('/'));
     }
 
-    async remove(id) {
+    async remove(id)
+    {
         await fetch(`/api/group/${id}`, {
             method: 'DELETE',
-            headers: {
+            headers:
+            {
+                'X-XSRF-TOKEN': this.state.csrfToken,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
-            }
+            },
+            credentials: 'include'
         }).then(() => {
             let updatedGroups = [...this.state.groups].filter(i => i.id !== id);
             this.setState({groups: updatedGroups});
         });
     }
 
-    render() {
+    render()
+    {
         const {groups, isLoading} = this.state;
 
-        if (isLoading) {
+        if (isLoading)
+        {
             return <p>Loading...</p>;
         }
 
@@ -87,4 +104,4 @@ class GroupList extends Component {
     }
 }
 
-export default GroupList;
+export default withCookies(withRouter(GroupList));
