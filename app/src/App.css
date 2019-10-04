@@ -24,3 +24,7 @@
 .container, .container-fluid {
   margin-top: 20px;
 }
+
+.navbar {
+  background-color: #28a745;
+}
