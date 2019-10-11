@@ -28,8 +28,8 @@ to edit General Settings. Add `http://localhost:3000` and `http://localhost:8080
 <h4>Server Configuration</h4>
  
  Set the `issuer` and copy the `clientId` and `clientSecret` into the `src/main/resources/application.yml` file of the application. 
- 
- <h4>Note:</h4> The value of `{yourOktaDomain}` should look something like `dev-123456.oktapreview.com`. Do not include the `-admin` as 
+  
+<strong>Note:</strong> The value of `{yourOktaDomain}` should look something like `dev-123456.oktapreview.com`. Do not include the `-admin` as 
  it appears in your browser URL.
  
 Therefore, your `applications.yml` should look like this:
